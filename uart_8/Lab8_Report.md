@@ -132,32 +132,32 @@ The UART is configured to transmit and receive via TEX and REX bits, which are s
           }
           }
 
-  void UART_Receive()                         //Deals with recieving data
-  {
-     if((UART2_RIS_R & (1<<4))==(1<<4))      //check if receive is done
-     {
-         //GPIO_PORTF_DATA_R |= (1<<BLUE_LED);     //Turn ON Blue LED - debug
-         UART2_CTL_R &= ~(1<<0);             //UART Disable
-         Rx = UART2_DR_R;
-         // Check if the Data recieved is correct by transmitting it again on PD7 and probing
+   void UART_Receive()                         //Deals with recieving data
+   {
+      if((UART2_RIS_R & (1<<4))==(1<<4))      //check if receive is done
+      {
+          //GPIO_PORTF_DATA_R |= (1<<BLUE_LED);     //Turn ON Blue LED - debug
+          UART2_CTL_R &= ~(1<<0);             //UART Disable
+          Rx = UART2_DR_R;
+          // Check if the Data recieved is correct by transmitting it again on PD7 and probing
+ 
+          UART2_DR_R = Rx;                    //Data Register
+          UART2_CTL_R |= (1<<8);              //Tx Enable
+          UART2_CTL_R |= (1<<0);              //UART Enable
 
-         UART2_DR_R = Rx;                    //Data Register
-         UART2_CTL_R |= (1<<8);              //Tx Enable
-         UART2_CTL_R |= (1<<0);              //UART Enable
+          if(Rx == 0xAA)    //Case 1
+          {
+              GPIO_PORTF_DATA_R |= (1<<BLUE_LED);     //Turn ON Blue LED
+              GPIO_PORTF_DATA_R &= ~(1<<GREEN_LED);   //Turn OFF Green LED
+              GPIO_PORTF_DATA_R &= ~(1<<RED_LED);     //Turn OFF RED LED
+          }
 
-         if(Rx == 0xAA)    //Case 1
-         {
-             GPIO_PORTF_DATA_R |= (1<<BLUE_LED);     //Turn ON Blue LED
-             GPIO_PORTF_DATA_R &= ~(1<<GREEN_LED);   //Turn OFF Green LED
-             GPIO_PORTF_DATA_R &= ~(1<<RED_LED);     //Turn OFF RED LED
-         }
-
-         else if(Rx == 0xF0)   //Case 2
-         {
-             GPIO_PORTF_DATA_R |= (1<<GREEN_LED);    //Turn ON Green LED
-             GPIO_PORTF_DATA_R &= ~(1<<BLUE_LED);    //Turn OFF BLUE LED
-             GPIO_PORTF_DATA_R &= ~(1<<RED_LED);     //Turn OFF RED LED
-         }
+          else if(Rx == 0xF0)   //Case 2
+          {
+              GPIO_PORTF_DATA_R |= (1<<GREEN_LED);    //Turn ON Green LED
+              GPIO_PORTF_DATA_R &= ~(1<<BLUE_LED);    //Turn OFF BLUE LED
+              GPIO_PORTF_DATA_R &= ~(1<<RED_LED);     //Turn OFF RED LED
+          } 
 
          UART2_ICR_R |= (1<<10)|(1<<9)|(1<<8)|(1<<7)|(1<<6)|(1<<5)|(1<<4)|(1<<1);    //Clear All     Interrupts
          UART2_CTL_R &= ~(1<<0);                                                     //UART Disable
