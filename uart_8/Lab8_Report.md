@@ -53,20 +53,20 @@ The UART is configured to transmit and receive via TEX and REX bits, which are s
 
       uint8_t Rx;
 
-     void UARTinit()
-     {
-       SYSCTL_RCGCGPIO_R |= (1<<3) | (1<<5); //Enable and provide a clock to GPIO Port D in Run mode
+      void UARTinit()
+      {
+        SYSCTL_RCGCGPIO_R |= (1<<3) | (1<<5); //Enable and provide a clock to GPIO Port D in Run mode
 
-      //Setting output pins - alt function - PORT D
-      GPIO_PORTD_LOCK_R = 0x4C4F434B;         /* unlock commit register */
-      GPIO_PORTD_CR_R = 0xFF;                 /* make PORTD0 configurable */
-      GPIO_PORTD_AFSEL_R |= (1<<6) | (1<<7);  //Enable alternate functions for PD6 and PD7
-      GPIO_PORTD_PCTL_R |= 0x11000000;        //Port Mux Control 7, Port Mux Control 6
+       //Setting output pins - alt function - PORT D
+       GPIO_PORTD_LOCK_R = 0x4C4F434B;         /* unlock commit register */
+       GPIO_PORTD_CR_R = 0xFF;                 /* make PORTD0 configurable */
+       GPIO_PORTD_AFSEL_R |= (1<<6) | (1<<7);  //Enable alternate functions for PD6 and PD7
+       GPIO_PORTD_PCTL_R |= 0x11000000;        //Port Mux Control 7, Port Mux Control 6
 
-       GPIO_PORTD_DIR_R &= ~0x40;              // Set Pin 6 as an input
-       GPIO_PORTD_DIR_R |= 0x80;               // Set Pin 7 as an input
-       GPIO_PORTD_PUR_R |= 0x40;               // Enable the internal pull-up resistor for Pin 0, 4
-       GPIO_PORTD_DEN_R |= (0x80) | (0X40);    // Digital enable Pin 0, 4
+        GPIO_PORTD_DIR_R &= ~0x40;              // Set Pin 6 as an input
+        GPIO_PORTD_DIR_R |= 0x80;               // Set Pin 7 as an input
+        GPIO_PORTD_PUR_R |= 0x40;               // Enable the internal pull-up resistor for Pin 0, 4
+        GPIO_PORTD_DEN_R |= (0x80) | (0X40);    // Digital enable Pin 0, 4
 
       //UART initialization
        UART2_CTL_R &= (0<<0);                  //Disable UART
